@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Fun Adventure - Kelas 2 SD</title>
+    <!-- Menggunakan Tailwind CSS untuk tata letak responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Menggunakan Google Fonts 'Fredoka' yang bulat, lucu, dan ramah anak -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js untuk efek suara ceria tanpa file eksternal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Menghubungkan ke file CSS eksternal -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex flex-col items-center justify-center p-4 sm:p-6">
+
+    <!-- Kontainer Utama Game -->
+    <main class="w-full max-w-2xl bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border-4 border-pink-200 p-5 sm:p-8 relative overflow-hidden">
+        
+        <!-- Hiasan Sudut Pastel -->
+        <div class="absolute -top-10 -left-10 w-32 h-32 bg-yellow-100 rounded-full opacity-60 pointer-events-none"></div>
+        <div class="absolute -bottom-10 -right-10 w-36 h-36 bg-blue-100 rounded-full opacity-60 pointer-events-none"></div>
+
+        <!-- HEADER: Judul & Skor -->
+        <header class="flex flex-wrap items-center justify-between gap-2 mb-6 relative z-30">
+            <div onclick="goHome()" title="Kembali ke Menu Awal" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
+                <span class="text-3xl sm:text-4xl animate-bounce">🧸</span>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-pink-600 leading-tight">English Fun!</h1>
+                    <p class="text-xs sm:text-sm text-gray-500 font-medium">Kelas 2 SD • Belajar Sambil Bermain</p>
+                </div>
+            </div>
+            
+            <!-- Papan Bintang & Tombol Home -->
+            <div class="flex items-center gap-2 relative z-30">
+                <button type="button" id="sound-toggle-btn" onclick="toggleSound()" title="Hidupkan/Matikan Suara" class="btn-pastel bg-pastel-yellow px-3 py-1.5 rounded-2xl font-bold text-base cursor-pointer hover:brightness-105">
+                    🔊
+                </button>
+                <div id="score-badge" class="hidden bg-yellow-100 border-2 border-yellow-300 px-3 py-1.5 rounded-2xl flex items-center gap-1.5 shadow-sm">
+                    <span class="text-xl">⭐</span>
+                    <span id="score-text" class="font-bold text-yellow-700 text-lg">0</span>
+                </div>
+                <button type="button" id="home-btn" onclick="goHome()" class="hidden btn-pastel bg-pastel-pink px-4 py-2 rounded-2xl font-bold text-sm sm:text-base flex items-center gap-1.5 cursor-pointer hover:brightness-105 active:scale-95">
+                    <span>🏠</span>
+                    <span>Menu</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- LAYAR 1: MENU UTAMA (PILIH KATEGORI) -->
+        <section id="menu-screen" class="relative z-10 text-center space-y-6">
+            <div class="bg-blue-50/80 border-2 border-blue-200 rounded-3xl p-5">
+                <div class="text-5xl mb-2 animate-float">🌈🦁🍎</div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-indigo-800 mb-1">Hello, Friends! 👋</h2>
+                <p class="text-gray-600 text-sm sm:text-base mb-3">Pilih petualangan belajar bahasa Inggrismu hari ini!</p>
+                <button type="button" onclick="testAudioSystem()" class="inline-flex items-center gap-2 bg-white hover:bg-yellow-50 text-indigo-700 border-2 border-indigo-200 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-sm cursor-pointer active:scale-95 transition">
+                    <span>🔊</span> <span id="audio-status-text">Tes Suara Dulu Yuk!</span>
+                </button>
+            </div>
+
+            <!-- Grid Pilihan Kategori -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Kategori 1: Hewan -->
+                <button onclick="startCategory('animals')" class="btn-pastel bg-pastel-yellow p-5 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:brightness-105">
+                    <span class="text-5xl">🐶</span>
+                    <span class="text-xl font-bold">Cute Animals</span>
+                    <span class="text-xs font-medium opacity-80 bg-white/60 px-3 py-1 rounded-full">Tebak Nama Hewan</span>
+                </button>
+
+                <!-- Kategori 2: Warna Hewan -->
+                <button onclick="startCategory('colors')" class="btn-pastel bg-pastel-pink p-5 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:brightness-105">
+                    <span class="text-5xl">🎨</span>
+                    <span class="text-xl font-bold">Animal Colors</span>
+                    <span class="text-xs font-medium opacity-80 bg-white/60 px-3 py-1 rounded-full">Warna-Warna Hewan</span>
+                </button>
+
+                <!-- Kategori 3: Buah-buahan -->
+                <button onclick="startCategory('fruits')" class="btn-pastel bg-pastel-green p-5 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:brightness-105">
+                    <span class="text-5xl">🍓</span>
+                    <span class="text-xl font-bold">Yummy Fruits</span>
+                    <span class="text-xs font-medium opacity-80 bg-white/60 px-3 py-1 rounded-full">Tebak Nama Buah</span>
+                </button>
+
+                <!-- Kategori 4: Kalimat Sederhana & Kosakata -->
+                <button onclick="startCategory('vocab')" class="btn-pastel bg-pastel-purple p-5 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:brightness-105">
+                    <span class="text-5xl">💬</span>
+                    <span class="text-xl font-bold">Simple English</span>
+                    <span class="text-xs font-medium opacity-80 bg-white/60 px-3 py-1 rounded-full">Kosakata & Kalimat</span>
+                </button>
+            </div>
+
+            <!-- Tombol Main Semua (Campuran) -->
+            <button onclick="startCategory('all')" class="w-full btn-pastel bg-pastel-blue py-4 px-6 rounded-3xl font-bold text-lg sm:text-xl flex items-center justify-center gap-2 cursor-pointer hover:brightness-105">
+                <span>🚀</span> Mainkan Semua Tantangan!
+            </button>
+        </section>
+
+        <!-- LAYAR 2: AREA PERMAINAN (KUIS INTERAKTIF) -->
+        <section id="game-screen" class="hidden relative z-10 space-y-5">
+            <!-- Bar Progres Pertanyaan -->
+            <div class="w-full bg-gray-100 rounded-full h-4 border-2 border-gray-200 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-pink-400 to-purple-400 h-full transition-all duration-500 rounded-full" style="width: 10%"></div>
+            </div>
+            <div class="flex justify-between text-xs font-bold text-gray-500 px-1">
+                <span id="category-label">Kategori: Animals</span>
+                <span id="question-counter">Soal 1 / 6</span>
+            </div>
+
+            <!-- Kartu Pertanyaan & Gambar Lucu -->
+            <div id="question-card" class="bg-gradient-to-b from-blue-50 to-purple-50 border-3 border-indigo-100 rounded-3xl p-6 text-center shadow-inner flex flex-col items-center justify-center min-h-[220px]">
+                <!-- Wadah Ilustrasi SVG / Emoji Besar -->
+                <div id="visual-container" class="mb-3 animate-float flex items-center justify-center">
+                    <!-- Diisi lewat JS -->
+                </div>
+
+                <!-- Teks Pertanyaan Bahasa Inggris & Terjemahan Indonesia -->
+                <div class="flex items-center justify-center gap-2">
+                    <h2 id="question-en" class="text-2xl sm:text-3xl font-bold text-gray-800">What animal is this?</h2>
+                    <button onclick="speakCurrentQuestion()" title="Dengarkan Suara" class="bg-white hover:bg-yellow-100 text-indigo-600 p-2.5 rounded-full shadow-md border-2 border-indigo-200 transition transform active:scale-90 cursor-pointer">
+                        🔊
+                    </button>
+                </div>
+                <p id="question-id" class="text-sm sm:text-base text-indigo-600 font-medium mt-1">(Hewan apakah ini?)</p>
+            </div>
+
+            <!-- Wadah Pilihan Jawaban (2 sampai 3 Pilihan Teks) -->
+            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-2">
+                <!-- Tombol pilihan akan dibuat dinamis oleh JavaScript -->
+            </div>
+
+            <!-- Kotak Umpan Balik / Penjelasan Kosakata (Muncul setelah menjawab) -->
+            <div id="feedback-box" class="hidden rounded-3xl p-4 text-center border-3 transition-all">
+                <p id="feedback-title" class="text-xl font-bold mb-1"></p>
+                <p id="feedback-vocab" class="text-sm sm:text-base font-medium mb-3"></p>
+                <button id="next-btn" onclick="nextQuestion()" class="btn-pastel bg-pastel-blue px-8 py-2.5 rounded-2xl font-bold text-base sm:text-lg cursor-pointer">
+                    Lanjut ➡️
+                </button>
+            </div>
+        </section>
+
+        <!-- LAYAR 3: HASIL AKHIR (CELEBRATION) -->
+        <section id="result-screen" class="hidden relative z-10 text-center space-y-6 py-4">
+            <div class="text-7xl animate-bounce">🏆🎉</div>
+            <div>
+                <h2 class="text-3xl font-bold text-pink-600">Great Job! Hebat!</h2>
+                <p class="text-gray-600 mt-1">Kamu sudah menyelesaikan tantangan belajar hari ini!</p>
+            </div>
+
+            <div class="bg-yellow-50 border-3 border-yellow-200 rounded-3xl p-6 max-w-sm mx-auto">
+                <p class="text-sm font-bold text-yellow-700 uppercase tracking-wider">Total Bintang Kamu</p>
+                <div class="text-5xl font-bold text-yellow-500 my-2 flex items-center justify-center gap-2">
+                    <span>⭐</span>
+                    <span id="final-score">60</span>
+                </div>
+                <p id="result-message" class="text-sm text-gray-600 font-medium">Kamu pintar sekali bahasa Inggris!</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <button onclick="restartCurrentCategory()" class="btn-pastel bg-pastel-green px-6 py-3.5 rounded-2xl font-bold text-lg cursor-pointer">
+                    🔄 Main Lagi
+                </button>
+                <button onclick="goHome()" class="btn-pastel bg-pastel-pink px-6 py-3.5 rounded-2xl font-bold text-lg cursor-pointer">
+                    🏠 Pilih Topik Lain
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Kecil -->
+    <footer class="mt-4 text-center text-xs text-gray-400 font-medium">
+        Dibuat khusus untuk belajar Bahasa Inggris Kelas 2 SD 🌟 Klik ikon 🔊 untuk mendengar pengucapan!
+    </footer>
+
+    <!-- Menghubungkan ke file JavaScript eksternal -->
+    <script src="script.js"></script>
+</body>
+</html>
